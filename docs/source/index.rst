@@ -1,8 +1,8 @@
-Welcome to Lumache's documentation!
+Welcome to Spring Rest Framework documentation!
 ===================================
 
-**Lumache** (/lu'make/) is a Python library for cooks and food lovers
-that creates recipes mixing random ingredients.
+**Spring REST Framework (SRF)** is a powerful library for Spring applications that brings the simplicity and flexibility of Django's REST Framework to Spring.
+SRF streamlines API development with powerful serialization, flexible filters, and seamless integration.
 It pulls data from the `Open Food Facts database <https://world.openfoodfacts.org/>`_
 and offers a *simple* and *intuitive* API.
 
@@ -19,4 +19,6 @@ Contents
 .. toctree::
 
    usage
-   api
+   Controllers
+   Serialization
+   Filters
