@@ -31,6 +31,7 @@ To install the Spring REST Framework, include the following dependencies in your
       </dependency>
    </dependencies>
 
+.. _getting_started:
 
 Getting Started
 ----------------
@@ -115,5 +116,6 @@ To start using the library, follow these steps:
       }  
       
 
-4. Run your application, and enjoy your APIs:
+4. Run your application, and enjoy your APIs.
+   You can see your API at http://app-server:port/swagger-ui.html
 
