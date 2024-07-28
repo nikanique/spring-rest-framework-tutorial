@@ -115,6 +115,8 @@ It requires three type parameters:
 
 This controller provides a standard way to list model's records, which can be extended or customized according to specific requirements. It includes support for various filtering options to enable flexible querying.
 
+.. _retrivecontroller_example_usage:
+
 Example Usage
 ^^^^^^^^^^^^^
 To use the ``RetrieveController``, extend it in a controller class for a specific model and repository. Below is an example of how you can extend `RetrieveController` for managing `Student` model.
@@ -136,6 +138,8 @@ To use the ``RetrieveController``, extend it in a controller class for a specifi
         }
     }
 
+.. _retrivecontroller_constructor:
+
 Constructor
 ^^^^^^^^^^^
 The constructor of ``RetrieveController`` is used to inject the repository that will handle db operations for the model. This repository is passed to the superclass constructor where it passes the repository to the service layers. We do not work with repository directly from Controllers.
@@ -146,6 +150,8 @@ The constructor of ``RetrieveController`` is used to inject the repository that 
     public StudentController(StudentRepository repository) {
         super(repository);
     }
+
+.. _retrivecontroller_methods:
 
 Methods
 ^^^^^^^
