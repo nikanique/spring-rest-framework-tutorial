@@ -4,21 +4,23 @@ Controllers
 ListController
 --------------
 
-The `ListController` class is a generic base controller designed for use in Spring Boot applications. It provides a common implementation for listing records from a repository with a variety of filtering options. This class is particularly useful when you need to build REST APIs for managing entities where listing and filtering functionalities are required.
+The ``ListController`` class is a generic base controller designed for use in Spring Boot applications. It provides a common implementation for listing records from a repository with a variety of filtering options. This class is particularly useful when you need to build REST APIs for managing database records where listing and filtering functionalities are required.
 
 Overview
 ^^^^^^^^
 
-The `ListController` is a generic class that can be extended to handle different types of entities. It requires three type parameters:
-- **T**: The type of the entity (e.g., `Student`).
-- **ID**: The type of the entity's identifier (e.g., `Long`).
+The `ListController` is a generic class that can be extended to handle different types of entities.
+It requires three type parameters:
+
+- **Model**: The class type of the entity (e.g., `Student`).
+- **ID**: The type of the model's identifier (e.g., `Long`).
 - **ModelRepository**: The type of the repository (e.g., `StudentRepository`).
 
-This controller provides a standard way to list entities, which can be extended or customized according to specific requirements. The `ListController` includes support for various filtering options to enable flexible querying.
+This controller provides a standard way to list model's records, which can be extended or customized according to specific requirements. The `ListController` includes support for various filtering options to enable flexible querying.
 
 Example Usage
 ^^^^^^^^^^^^^
-To use the `ListController`, extend it in a controller class for a specific entity and repository. Below is an example of how you can extend `ListController` for managing `Student` entities.
+To use the ``ListController``, extend it in a controller class for a specific model and repository. Below is an example of how you can extend `ListController` for managing `Student` model.
 
 
 .. code-block:: java
@@ -39,7 +41,7 @@ To use the `ListController`, extend it in a controller class for a specific enti
 
 Constructor
 ^^^^^^^^^^^
-The constructor of ``ListController`` is used to inject the repository that will handle CRUD operations for the entity. This repository is passed to the superclass constructor where it passes the repository to the service layers. We do not work with repository directly from Controllers.
+The constructor of ``ListController`` is used to inject the repository that will handle db operations for the model. This repository is passed to the superclass constructor where it passes the repository to the service layers. We do not work with repository directly from Controllers.
 
 
 .. code-block:: java
@@ -50,7 +52,7 @@ The constructor of ``ListController`` is used to inject the repository that will
 
 Methods
 ^^^^^^^
-- **getDTO()**: This method should be overridden to return the class type of the DTO (Data Transfer Object) that the controller will use to serialize/deserialize the entity records. In the example, it returns ``StudentDto.class``.
+- **getDTO()**: This method should be overridden to return the class type of the DTO (Data Transfer Object) that the controller will use to serialize/deserialize the model's records. In the example, it returns ``StudentDto.class``.
 
 .. code-block:: java
 
