@@ -15,12 +15,10 @@ The `Dto` class supports for:
 - **Field mapping**: Maps DTO fields to model fields, including nested relationships.
 - **Read-only and write-only fields**: Restricts field accessibility as needed, only for output, or input.
 
-The examples below illustrate how to leverage these features in your DTO classes.
 
 Read-Only and Write-Only Fields
 -------------------------------
 
-**Description**  
 - **Read-only fields**: Included in the serialized output but cannot be set during deserialization.
 - **Write-only fields**: Can be set during deserialization but are not included in the serialized output.
 
@@ -32,7 +30,7 @@ Read-Only and Write-Only Fields
     @WriteOnly
     private Long countryId;
 
-**Example Use Case**  
+
 In the `CarDTO` class:
 - `id` is a read-only field, ensuring the client cannot modify it.
 - `countryId` is a write-only field, allowing seamless association with a country by its ID during object creation.
@@ -57,7 +55,7 @@ The `@Expose` annotation allows customization of:
     @ReadOnly
     private String continent;
 
-**Example**  
+
 - `decade` is derived from the `year` field using the static method `getTheDecade`.
 - `continent` maps to the `country__continent` field, a nested relationship in the model.
 
@@ -73,7 +71,7 @@ DTOs support filtering and serialization of nested model fields using a double u
     @ReadOnly
     private Integer population;
 
-**Example Use Case**  
+
 In `CarDTO`, `population` maps to a nested model field (`country.continental.population`) and formats the value with thousands separators.
 
 Field Validation
@@ -92,7 +90,7 @@ The `@FieldValidation` annotation and the `validate` method enforce constraints 
     @FieldValidation(minLength = 3, nullable = false)
     private String company;
 
-**Example**  
+
 In `ApplianceDTO`:
 - `company` must have at least three characters and cannot be null.
 - Custom validation in the `validate` method further restricts the value of `company` (e.g., cannot be "BMW").
@@ -113,7 +111,7 @@ The `toRepresent` method allows developers to override default serialization beh
         return wrapperNode;
     }
 
-**Example**  
+
 In `ApplianceDTO`, `toRepresent` wraps the serialized object in a custom JSON structure with a `description` field.
 
 Static Method Transformations
@@ -132,7 +130,6 @@ The `@Expose` annotation's `methodName` parameter enables field value transforma
         return (Integer) value / 10;
     }
 
-**Example**  
 The `getTheDecade` method processes the `year` field, converting it into a decade value.
 
 Formatting Exposed Fields
@@ -149,7 +146,85 @@ Use the `format` parameter in the `@Expose` annotation to specify custom output 
     @Expose(format = "#,###")
     private Integer population;
 
-**Example**  
+
 - `mark` is formatted to two decimal places.
 - `population` uses a thousands separator.
 
+
+
+Below is an example DTO class that demonstrates all the features of the `Dto` :
+
+.. code-block:: java
+
+    @Data
+    public class OrderDTO extends Dto {
+
+        @ReadOnly
+        private Long id;
+
+        @Expose(source = "customer__full_name")
+        @ReadOnly
+        private String customerName;
+
+        @Expose(source = "customer__address__city")
+        @ReadOnly
+        private String customerCity;
+
+        @FieldValidation(nullable = false, minLength = 3)
+        private String productName;
+
+        @Expose(format = "#,###")
+        private Integer quantity;
+
+        @Expose(format = "{.2f}")
+        private Double pricePerUnit;
+
+        @Expose(source = "total_price", format = "{.2f}")
+        @ReadOnly
+        private Double totalPrice;
+
+        // Enables associating the order with a customer using the customer's ID
+        @ReferencedModel(
+                model = "com.example.app.model.Customer",
+                referencingField = "customer"
+        )
+        @WriteOnly
+        private Long customerId;
+
+        @ReadOnly
+        private Timestamp orderTimestamp;
+
+        @FieldValidation(nullable = false)
+        private String orderStatus;
+
+        @Expose(source = "order_details", methodName = "formatOrderDetails")
+        @ReadOnly
+        private String orderSummary;
+
+        public static String formatOrderDetails(Object value) {
+            return "Summary: " + value.toString();
+        }
+
+        @Override
+        public Map<String, String> validate(Set<String> fieldNames, Boolean raiseValidationError) throws Throwable {
+            Map<String, String> validationErrors = super.validate(fieldNames, false);
+
+            if (quantity != null && quantity <= 0) {
+                validationErrors.put("quantity", "Quantity must be greater than zero");
+            }
+
+            if (!validationErrors.isEmpty() && raiseValidationError) {
+                throw new ValidationException(validationErrors);
+            }
+
+            return validationErrors;
+        }
+
+        public static ObjectNode toRepresent(ObjectNode node) {
+            ObjectMapper mapper = new ObjectMapper();
+            ObjectNode wrapperNode = mapper.createObjectNode();
+            wrapperNode.set("data", node);
+            wrapperNode.put("description", "Order information with enhanced representation");
+            return wrapperNode;
+        }
+    }
