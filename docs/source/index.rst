@@ -17,3 +17,4 @@ Contents
    GenericControllers
    Serialization
    Filters
+   Dto
