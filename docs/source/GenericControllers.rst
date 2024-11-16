@@ -1,12 +1,12 @@
-Controllers
+GenericControllers
 ===========
 
-ListController
+GenericListController
 --------------
 
-The ``ListController`` class is a generic controller designed for use in Spring Boot applications. It provides a common implementation for listing records from a repository with a variety of filtering options. This class is particularly useful when you need to build REST APIs for managing database records where listing and filtering functionalities are required.
+The ``GenericListController`` provides implementation for REST API listing records from a repository with a variety of filtering options. It can be extended or customized according to specific requirements. It includes support for various filtering options to enable flexible querying.
 
-This controller exposes ``GET /`` endpoint which returns paginated list of desired model's records from database.
+It exposes ``GET /`` endpoint which returns paginated list of desired model's records from database.
 
 It requires three type parameters:
 
@@ -14,32 +14,65 @@ It requires three type parameters:
 - **ID**: The type of the model's identifier (e.g., `Long`).
 - **ModelRepository**: The repository interface extending ``JpaRespository`` and ``JpaSpecificationExecutor`` (e.g., `StudentRepository`).
 
-This controller provides a standard way to list model's records, which can be extended or customized according to specific requirements. It includes support for various filtering options to enable flexible querying.
 
 Example Usage
 ^^^^^^^^^^^^^
-To use the ``ListController``, extend it in a controller class for a specific model and repository. Below is an example of how you can extend `ListController` for managing `Student` model.
+To use the ``GenericListController``, extend it in a controller class for a specific model and repository. Below is an example of how you can extend `GenericListController` for managing `Student` model.
 
+Assuming that we have Student model in our project:
+.. code-block:: java
+
+    import jakarta.persistence.Entity;
+    import jakarta.persistence.GenerationType;
+    import jakarta.persistence.Id;
+    import lombok.Data;
+    
+    @Entity
+    @Data
+    public class Student {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    private String name;
+    private Integer age;
+    private String major;
+    
+    }
+
+And this is the StudentRepository. You should extend both ``JpaRepository`` and ``JpaSpecificationExecutor`` to enable the `GenericListController` to use repository in its services.
+
+.. code-block:: java
+    import com.example.demo.model.Student;
+    import org.springframework.data.jpa.repository.JpaRepository;
+    import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+    import org.springframework.stereotype.Repository;
+
+    @Repository
+    public interface StudentRepository extends JpaRepository<Student, Long>, JpaSpecificationExecutor<Student> {
+    }
+
+The controller :
 
 .. code-block:: java
 
     @RequestMapping("/student")
     @RestController
     @Tag(name = "Student")
-    public class StudentController extends ListController<Student, Long, StudentRepository> {
+    public class StudentController extends GenericListController<Student, Long, StudentRepository> {
         public StudentController(StudentRepository repository) {
             super(repository);
         }
 
         @Override
         protected Class<?> getDTO() {
-            return Student.class;
+            return StudentDto.class;
         }
     }
 
 Constructor
 ^^^^^^^^^^^
-The constructor of ``ListController`` is used to inject the repository that will handle db operations for the model. This repository is passed to the superclass constructor where it passes the repository to the service layers. We do not work with repository directly from Controllers.
+The constructor of ``GenericListController`` is used to inject the repository that will handle db operations for the model. This repository is passed to the superclass constructor where it passes the repository to the service layer.
+It does not work with repository directly from Controllers, all db operations is handled in the service layer.
 
 
 .. code-block:: java
@@ -50,7 +83,7 @@ The constructor of ``ListController`` is used to inject the repository that will
 
 Methods
 ^^^^^^^
-- **getDTO()**: This method must be overridden to return the class type of the DTO (Data Transfer Object) that the controller will use to serialize/deserialize the model's records.
+- **getDTO()**: This method must be overridden to return the class type of the DTO (Data Transfer Object). The controller uses it to serialize/deserialize the model's records.
 
 .. code-block:: java
 
@@ -100,10 +133,10 @@ To learn more about the ``SearchCriteria`` please read the :ref:`SearchCriteria`
 
 
 
-RetrieveController
+GenericRetrieveController
 ------------------
 
-The ``RetrieveController`` class is another generic controller that provides a standardized implementation for retrieving a single record from the database using a repository. This controller exposes a ``GET /{lookup}`` endpoint that locates and retrieves a matching record based on a customizable lookup field.
+The ``GenericRetrieveController`` class is another generic controller that provides a standardized implementation for retrieving a single record from the database using a repository. This controller exposes a ``GET /{lookup}`` endpoint that locates and retrieves a matching record based on a customizable lookup field.
 
 By default, the controller matches the input value provided in the path variable with the ``id`` field of the records. This behavior can be customized to use different fields for lookup, allowing for flexible record retrieval.
 
@@ -119,7 +152,7 @@ This controller provides a standard way to list model's records, which can be ex
 
 Example Usage
 ^^^^^^^^^^^^^
-To use the ``RetrieveController``, extend it in a controller class for a specific model and repository. Below is an example of how you can extend `RetrieveController` for managing `Student` model.
+To use the ``GenericRetrieveController``, extend it in a controller class for a specific model and repository. Below is an example of how you can extend `GenericRetrieveController` for managing `Student` model.
 
 
 .. code-block:: java
@@ -127,14 +160,14 @@ To use the ``RetrieveController``, extend it in a controller class for a specifi
     @RequestMapping("/student")
     @RestController
     @Tag(name = "Student")
-    public class StudentController extends RetrieveController<Student, Long, StudentRepository> {
+    public class StudentRetrieveController extends GenericRetrieveController<Student, Long, StudentRepository> {
         public StudentController(StudentRepository repository) {
             super(repository);
         }
 
         @Override
         protected Class<?> getDTO() {
-            return Student.class;
+            return StudentDto.class;
         }
     }
 
@@ -142,12 +175,12 @@ To use the ``RetrieveController``, extend it in a controller class for a specifi
 
 Constructor
 ^^^^^^^^^^^
-The constructor of ``RetrieveController`` is used to inject the repository that will handle db operations for the model. This repository is passed to the superclass constructor where it passes the repository to the service layers. We do not work with repository directly from Controllers.
+The constructor of ``GenericRetrieveController`` is used to inject the repository that will handle db operations for the model. This repository is passed to the superclass constructor where it passes the repository to the service layers. We do not work with repository directly from Controllers.
 
 
 .. code-block:: java
 
-    public StudentController(StudentRepository repository) {
+    public StudentRetrieveController(StudentRepository repository) {
         super(repository);
     }
 
@@ -169,7 +202,7 @@ In the example, it returns ``StudentDto.class``.
 To learn more about the ``Dto`` please read the :ref:`DTO`.
 
 
-- **configLookupFilter()**: By default, the `RetrieveController` searches for the given lookup value in the `id` field of records. If your model does not have an `id` field or if you want to use a different field for this purpose, you can override this method to specify your desired field.
+- **configLookupFilter()**: By default, the `GenericRetrieveController` searches for the given lookup value in the `id` field of records. If your model does not have an `id` field or if you want to use a different field for this purpose, you can override this method to specify your desired field.
 
 
 .. code-block:: java
@@ -183,4 +216,4 @@ To learn more about the ``Dto`` please read the :ref:`DTO`.
                 .build();
     }
 
-In this example, we specified the ``nationalNumber`` field which is an ``Integer`` field to lookup the records.
+In this example, we specified the ``nationalNumber`` as lookup field which is an ``Integer`` field to retrieve the record.
