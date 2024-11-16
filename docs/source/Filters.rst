@@ -38,30 +38,31 @@ The example applies set of 2 filters on the endpoint result:
   
 Finally we compile the FilterSet by calling ``.build()`` method.
 
+
 1. **Basic Filter**:
-   .. code-block:: java
+   
+.. code-block:: java
 
         FilterSetBuilder addFilter(String name, FilterOperation operation, FieldType fieldType)
         
     Adds a filter with a name, operation, and type.
 
 2. **Filter with Help Text**:
-   .. code-block:: java
+   
+.. code-block:: java
 
         FilterSetBuilder addFilter(String name, FilterOperation operation, FieldType fieldType, String helpText)
 
     Adds a filter and a descriptive help text.
 
 3. **Model-Field Mapping**:
-   .. code-block:: java
+
+.. code-block:: java
 
         FilterSetBuilder addFilter(String name, String modelFieldName, FilterOperation operation, FieldType fieldType)
 
     Links a filter name to a specific model field.
 
-
-
----
 
 Filter
 ^^^^^^^^^^^^^
