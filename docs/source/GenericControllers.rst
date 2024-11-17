@@ -78,6 +78,25 @@ Finally, the controller :
         }
     }
 
+API Method
+^^^^^^^^^^^
+
+``GET /``
+Retrieves a paginated list of records with optional filters and sorting.
+
+**Parameters:**
+
+- `page` (default: 0): The page number.
+- `size` (default: 10): The number of records per page.
+- `sortBy` (default: empty): Field to sort by.
+- `direction` (default: `ASC`): Sort direction (`ASC` or `DESC`).
+
+**Example Usage:**
+
+.. code-block:: bash
+
+    curl -X GET "http://localhost:8080/student?page=1&size=5&sortBy=name&direction=DESC"
+
 Constructor
 ^^^^^^^^^^^
 The constructor of ``GenericListController`` is used to inject the repository that will handle db operations for the model. This repository is passed to the superclass constructor where it passes the repository to the service layers. We do not work with repository directly from Controllers.
@@ -139,7 +158,35 @@ The method allows for dynamic and request-specific filtering of records, enhanci
 
 To learn more about the ``SearchCriteria`` please read the :ref:`SearchCriteria`.
 
+- **configAllowedOrderByFields()**: This method enables developers to define restrictions on the fields that can be used for sorting in the ``GET /`` endpoint of the generic list controller. By default, the method returns an empty set:
 
+.. code-block:: java
+
+    default Set<String> configAllowedOrderByFields() {
+        return Collections.emptySet();
+    }
+
+The default implementation imposes **no limitations** on the sorting parameters, allowing all fields to be used for sorting. If you want to impose specific restrictions, they should override this method and return a set of allowed field names. For example:
+
+.. code-block:: java
+
+    @Override
+    public Set<String> configAllowedOrderByFields() {
+        return Set.of("name", "dateCreated", "status");
+    }
+
+**Result**: Only the fields ``name``, ``dateCreated``, and ``status`` will be allowed for sorting.
+
+To prevent sorting entirely, return a set containing a single empty string:
+
+.. code-block:: java
+
+    @Override
+    public Set<String> configAllowedOrderByFields() {
+        return Set.of("");
+    }
+
+**Result**: Sorting will be disabled for the ``GET /`` endpoint.
 
 GenericRetrieveController
 ------------------
@@ -227,6 +274,22 @@ To learn more about the ``Dto`` please read the :ref:`DTO`.
 In this example, we specified the ``nationalNumber`` as lookup field which is an ``Integer`` field to retrieve the record.
 
 
+- **filterByRequest()**: Like ``GenericListController`` this controller use this method to customize the filtering criteria based on the HTTP request object's properties. It is called during the processing of record lookup to apply additional filters that are derived from the request parameters or headers.
+
+
+.. code-block:: java
+
+    @Override
+    protected List<SearchCriteria> filterByRequest(HttpServletRequest request, List<SearchCriteria> searchCriteria) {
+        searchCriteria.add(new SearchCriteria(
+                "schoolIid",
+                FilterOperation.EQUAL,
+                request.getHeader("schoolIid")
+        ));
+        return searchCriteria;
+    }
+
+
 GenericCreateController
 ------------------------
 
@@ -262,7 +325,7 @@ Below is an example of how to extend the ``GenericCreateController`` to manage a
 Methods
 ^^^^^^^
 
-- **getDTO()**: Returns the class type of the DTO used for serializing/deserializing the model's data. 
+- **getDTO()**: This method returns the class type of the DTO used for both deserializing the request body and serializing the response data.
 
     .. code-block:: java
 
@@ -270,6 +333,25 @@ Methods
         protected Class<?> getDTO() {
             return StudentDto.class;
         }
+
+    The `StudentDto` class specified in this example will be used as the default DTO for both the request and response in the `GenericCreateController`. This simplifies development when a single DTO is sufficient for both purposes.
+
+    If you need to use different DTOs for request and response, you can override the following methods to provide distinct DTO classes:
+
+    .. code-block:: java
+
+        @Override
+        public Class<?> getCreateRequestBodyDTO() {
+            return CreateStudentDto.class; // DTO for request body
+        }
+
+        @Override
+        public Class<?> getCreateResponseBodyDTO() {
+            return StudentResponseDto.class; // DTO for response
+        }
+
+    By default, both of these methods return the result of `getDTO()`. Overriding them allows for customization of the serialization and deserialization processes for requests and responses independently. This is particularly useful in scenarios where the data requirements for creating a record differ from those for returning a record.
+
 
 GenericUpdateController
 ------------------------
@@ -320,7 +402,49 @@ Methods
                     .build();
         }
 
-- **getDTO()**: Returns the DTO class type.
+- **getDTO()**: This method returns the class type of the DTO used for both deserializing the request body and serializing the response data.
+
+    .. code-block:: java
+
+        @Override
+        protected Class<?> getDTO() {
+            return StudentDto.class;
+        }
+
+    The `StudentDto` class specified in this example will be used as the default DTO for both the request and response in the `GenericUpdateController`. This simplifies development when a single DTO is sufficient for both purposes.
+
+    If you need to use different DTOs for request and response in ``GenericUpdateController``, you can override the following methods to provide distinct DTO classes:
+
+    .. code-block:: java
+
+        @Override
+        public Class<?> getUpdateRequestBodyDTO() {
+            return UpdateStudentDto.class; // DTO for request body
+        }
+
+        @Override
+        public Class<?> getUpdateResponseBodyDTO() {
+            return StudentResponseDto.class; // DTO for response
+        }
+
+    By default, both of these methods return the result of `getDTO()`. Overriding them allows for customization of the serialization and deserialization processes for requests and responses independently. This is particularly useful in scenarios where the data requirements for updating a record differ from those for returning a record.
+
+
+
+- **filterByRequest()**: This method customizes the filtering criteria based on the HTTP request object's properties. It is called during the processing of record lookup before updating to apply additional filters that are derived from the request parameters or headers.
+
+
+.. code-block:: java
+
+    @Override
+    protected List<SearchCriteria> filterByRequest(HttpServletRequest request, List<SearchCriteria> searchCriteria) {
+        searchCriteria.add(new SearchCriteria(
+                "schoolIid",
+                FilterOperation.EQUAL,
+                request.getHeader("schoolIid")
+        ));
+        return searchCriteria;
+    }
 
 
 GenericDeleteController
@@ -374,3 +498,257 @@ Methods
 
 - **getDTO()**: Returns the DTO class type.
 
+
+- **filterByRequest()**: This method customizes the filtering criteria based on the HTTP request object's properties. It is called during the processing of record lookup before deleting to apply additional filters that are derived from the request parameters or headers.
+
+
+.. code-block:: java
+
+    @Override
+    protected List<SearchCriteria> filterByRequest(HttpServletRequest request, List<SearchCriteria> searchCriteria) {
+        searchCriteria.add(new SearchCriteria(
+                "schoolIid",
+                FilterOperation.EQUAL,
+                request.getHeader("schoolIid")
+        ));
+        return searchCriteria;
+    }
+
+
+GenericQueryController
+------------------------
+
+The `GenericQueryController` is an abstract controller designed for use in Spring Boot applications to facilitate querying and retrieving model records. It provides a consistent and reusable implementation for listing and retrieving entities from a repository. The controller supports advanced features such as filtering, sorting, and response serialization.
+
+It provides these two endpoints for the given model:
+
+  - `GET /`: Retrieves a paginated list of records with optional filters and sorting.
+  - `GET /{lookup}`: Retrieves a single record based on a lookup value.
+
+
+Usage Example
+^^^^^^^^^^^^^^^^
+
+Here's an example of how to extend the `GenericQueryController` for a specific entity:
+
+.. code-block:: java
+
+    @RequestMapping("/student")
+    @RestController
+    @Tag(name = "Student")
+    public class StudentController extends GenericQueryController<Student, Long, StudentRepository> {
+        public StudentController(StudentRepository repository) {
+            super(repository);
+        }
+
+        @Override
+        protected Class<?> getDTO() {
+            return StudentDto.class;
+        }
+    }
+
+### Parameters
+
+- **Model**: The class type of the entity (e.g., `Student`).
+- **ID**: The type of the entity's identifier (e.g., `Long`).
+- **ModelRepository**: The repository interface extending `JpaRepository` and `JpaSpecificationExecutor` (e.g., `StudentRepository`).
+
+API Methods
+^^^^^^^^^^^^^^^^
+
+``GET /``
+
+Retrieves a paginated list of records with optional filters and sorting.
+
+**Parameters:**
+
+- `page` (default: 0): The page number.
+- `size` (default: 10): The number of records per page.
+- `sortBy` (default: empty): Field to sort by.
+- `direction` (default: `ASC`): Sort direction (`ASC` or `DESC`).
+
+**Example Usage:**
+
+.. code-block:: bash
+
+    curl -X GET "http://localhost:8080/student?page=1&size=5&sortBy=name&direction=DESC"
+
+**Response:** Returns a paginated list of objects in the specified format.
+
+``GET /{lookup}``
+
+Retrieves a single record based on a lookup value (e.g., ID).
+
+**Parameters:**
+
+- `lookup`: The lookup value used to fetch the record.
+
+**Example Usage:**
+
+.. code-block:: bash
+
+    curl -X GET "http://localhost:8080/student/1"
+
+**Response:** Returns the object corresponding to the lookup value.
+
+Methods
+^^^^^^^^^^^^^^^^^^^
+
+- ``getListResponseDTO()`` and ``getRetrieveResponseDTO()``
+Specifies the DTO classes used for serializing list and retrieve responses. Defaults to the result of ``getDTO()``. If both the list and retrieve endpoints use the same DTO class, you can simply override only the ``getDTO()`` method to specify the common DTO. 
+
+However, if different DTO classes are needed for list and retrieve operations, you can override these methods individually to provide the appropriate DTO for each endpoint:
+
+.. code-block:: java
+
+    @Override
+    protected Class<?> getListResponseDTO() {
+        return ListStudentDto.class;
+    }
+
+    @Override
+    protected Class<?> getRetrieveResponseDTO() {
+        return DetailedStudentDto.class;
+    }
+
+This separation allows for flexible customization, enabling you to tailor the response structure of each endpoint to the specific needs of your application.
+
+- ``configFilterSet()``: Configures the filters available for querying in ``GET /`` endpoint listing the records. By default, returns an empty filter set.
+
+- ``configLookupFilter()``: Specifies the filter used for retrieving a single record by lookup value in ``GET /{lookup}`` endpoint. Default: ID field with Equal filter.
+
+- ``configAllowedOrderByFields()`` : This method enables developers to define restrictions on the fields that can be used for sorting in the ``GET /`` endpoint of the generic list controller. By default, the method returns an empty set:
+
+.. code-block:: java
+
+    default Set<String> configAllowedOrderByFields() {
+        return Collections.emptySet();
+    }
+
+The default implementation imposes **no limitations** on the sorting parameters, allowing all fields to be used for sorting. If you want to impose specific restrictions, they should override this method and return a set of allowed field names. For example:
+
+.. code-block:: java
+
+    @Override
+    public Set<String> configAllowedOrderByFields() {
+        return Set.of("name", "dateCreated", "status");
+    }
+
+**Result**: Only the fields ``name``, ``dateCreated``, and ``status`` will be allowed for sorting.
+
+To prevent sorting entirely, return a set containing a single empty string:
+
+.. code-block:: java
+
+    @Override
+    public Set<String> configAllowedOrderByFields() {
+        return Set.of("");
+    }
+
+**Result**: Sorting will be disabled for the ``GET /`` endpoint.
+  
+GenericCommandController
+-------------------------
+
+The ``GenericCommandController`` is an abstract class designed to handle generic CUD (Create, Update, Delete) operations in a Spring Boot application. The controller exposes endpoints for creating, updating, partially updating, and deleting resources.
+
+**Example Implementation**
+
+.. code-block:: java
+
+    @RequestMapping("/student")
+    @RestController
+    @Tag(name = "Student")
+    public class StudentCommandController extends GenericCommandController<Student, Long, StudentRepository> {
+        public StudentCommandController(StudentRepository repository) {
+            super(repository);
+        }
+
+        @Override
+        protected Class<?> getDTO() {
+            return StudentDto.class;
+        }
+    }
+
+**Type Parameters**
+
+- **Model**: The class type of the entity (e.g., ``Student``).
+- **ID**: The type of the entity's identifier (e.g., ``Long``).
+- **ModelRepository**: The repository interface extending ``JpaRepository`` and ``JpaSpecificationExecutor`` (e.g., ``StudentRepository``).
+
+
+Endpoints
+^^^^^^^^^^
+
+- **POST** ``/``  
+  Creates a new resource in the database. The request body is deserialized using the ``getCreateRequestBodyDTO()`` DTO.
+
+  .. code-block:: java
+
+      @PostMapping("/")
+      public ResponseEntity<ObjectNode> post(HttpServletRequest request) throws IOException {
+          return this.create(this, request);
+      }
+
+- **PUT** ``/{lookup}``  
+  Fully updates an existing resource. The request body is deserialized using the ``getUpdateRequestBodyDTO()`` DTO.
+
+  .. code-block:: java
+
+      @PutMapping("/{lookup}")
+      public ResponseEntity<ObjectNode> put(@PathVariable(name = "lookup") Object lookupValue, HttpServletRequest request) throws Throwable {
+          return this.update(this, lookupValue, request);
+      }
+
+- **PATCH** ``/{lookup}``  
+  Partially updates an existing resource. Similar to PUT but allows partial updates.
+
+  .. code-block:: java
+
+      @PatchMapping("/{lookup}")
+      public ResponseEntity<ObjectNode> partialUpdate(@PathVariable(name = "lookup") Object lookupValue, HttpServletRequest request) throws Throwable {
+          return this.partialUpdate(this, lookupValue, request);
+      }
+
+- **DELETE** ``/{lookup}``  
+  Deletes a resource identified by the lookup value.
+
+  .. code-block:: java
+
+      @DeleteMapping("/{lookup}")
+      public ResponseEntity<Void> delete(HttpServletRequest request, @PathVariable(name = "lookup") Object lookupValue) {
+          return deleteObject(this, request, lookupValue);
+      }
+
+Customization Points
+^^^^^^^^^^^^^^^^^^^^^^
+
+- ``getCreateRequestBodyDTO()`` and ``getCreateResponseBodyDTO()``  
+  Specifies the DTOs used for serializing/deserializing create request and response bodies. Defaults to the value of ``getDTO()``.
+
+  .. code-block:: java
+
+      @Override
+      public Class<?> getCreateRequestBodyDTO() {
+          return CreateStudentDto.class;
+      }
+
+      @Override
+      public Class<?> getCreateResponseBodyDTO() {
+          return StudentResponseDto.class;
+      }
+
+- ``getUpdateRequestBodyDTO()`` and ``getUpdateResponseBodyDTO()``  
+  Specifies the DTOs used for serializing/deserializing update request and response bodies.
+
+- ``configLookupFilter()``  
+  Configures the filter used to identify a resource during update or delete operations. Defaults to filtering by an ``id`` field.
+
+  .. code-block:: java
+
+      @Override
+      protected Filter configLookupFilter() {
+          return new Filter("id", FilterOperation.EQUAL, FieldType.LONG);
+      }
+
+If all endpoints use the same DTO class, you can simply override only the ``getDTO()`` method to specify the common DTO.
