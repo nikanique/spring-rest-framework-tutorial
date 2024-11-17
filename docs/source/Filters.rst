@@ -3,23 +3,26 @@ Filters and FilterSet
 
 The ``FilterSet`` and ``Filter`` classes provide a structured and flexible way to define filters for your data retrieval operations. Inspired by Django Rest Framework (DRF) filters, these components allow you to define filtering criteria for database queries. The Filter supports operations like filtering by equality, ranges, inclusion in a set, substring matching, and more, making it highly adaptable to various requirements.
 
-``FilterSet`` Class
+FilterSet Class
 --------------
 
 The ``FilterSet`` class represents a collection of filters. It provides a fluent API for creating and managing filters that can be applied to your data models.
 
 Constructor
 ^^^^^^^^^^^^^
+
 - ``FilterSet()``: Creates an empty ``FilterSet``.
 - ``FilterSet(Set<Filter> filters)``: Creates a ``FilterSet`` with the given set of filters.
 
 Methods
 ^^^^^^^^^^^^^
+
 - ``Set<Filter> getFilters()``: Retrieves all filters in the ``FilterSet``.
 - ``void add(Filter filter)``: Adds a single filter to the ``FilterSet``.
 
 Builder
 ^^^^^^^^^^^^^
+
 The ``FilterSetBuilder`` provides methods to construct a ``FilterSet`` instance fluently:
 
 .. code-block::java
@@ -65,7 +68,7 @@ Finally we compile the FilterSet by calling ``.build()`` method.
 
 
 Filter
-^^^^^^^^^^^^^
+--------------
 
 The ``Filter`` class represents an individual filtering criterion. It encapsulates the details required for filtering, such as the field name, filtering operation, field type, and optional help text.
 
@@ -81,6 +84,7 @@ Filter class properties:
 
 FilterOperation
 ^^^^^^^^^^^^^
+
 The `FilterOperation` enum defines the types of filtering operations supported:
 
 - ``EQUAL``: Checks for equality.
