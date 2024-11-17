@@ -83,7 +83,7 @@ Filter class properties:
 
 
 FilterOperation
-^^^^^^^^^^^^^
+--------------
 
 The `FilterOperation` enum defines the types of filtering operations supported:
 
