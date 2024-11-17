@@ -1,12 +1,19 @@
-GenericControllers
+Generic Controllers
+===================
+
+Generic Controllers standardize and simplify the implementation of RESTful APIs for managing model records, including operations like creating, retrieving, updating, and deleting records. Each generic controller is designed to be extended and configured for specific models, repositories, and use cases.
+
+
+These controllers are highly configurable, enabling developers to customize the DTO, filters, and lookup fields for their specific use cases. To use these controllers, extend them in your project, inject the appropriate repository, and configure methods like `getDTO()` and `configLookupFilter()`.
+
 ===========
 
 GenericListController
 --------------
 
-The ``GenericListController`` provides implementation for REST API listing records from a repository with a variety of filtering options. It can be extended or customized according to specific requirements. It includes support for various filtering options to enable flexible querying.
+The ``GenericListController`` class is a generic controller designed for use in Spring Boot applications. It provides a common implementation for listing records from a repository with a variety of filtering options. This class is particularly useful when you need to build REST APIs for managing database records where listing and filtering functionalities are required.
 
-It exposes ``GET /`` endpoint which returns paginated list of desired model's records from database.
+This controller exposes ``GET /`` endpoint which returns paginated list of desired model's records from database.
 
 It requires three type parameters:
 
@@ -14,6 +21,7 @@ It requires three type parameters:
 - **ID**: The type of the model's identifier (e.g., `Long`).
 - **ModelRepository**: The repository interface extending ``JpaRespository`` and ``JpaSpecificationExecutor`` (e.g., `StudentRepository`).
 
+This controller provides a standard way to list model's records, which can be extended or customized according to specific requirements. It includes support for various filtering options to enable flexible querying.
 
 Example Usage
 ^^^^^^^^^^^^^
@@ -39,7 +47,7 @@ Assuming that we have Student model in our project:
     
     }
 
-And this is the StudentRepository. You should extend both ``JpaRepository`` and ``JpaSpecificationExecutor`` to enable the `GenericListController` to use repository in its services.
+And this is the StudentRepository. You should extend both ``JpaRepository`` and ``JpaSpecificationExecutor`` to enable the repository to be used in .
 
 .. code-block:: java
     import com.example.demo.model.Student;
@@ -51,7 +59,7 @@ And this is the StudentRepository. You should extend both ``JpaRepository`` and 
     public interface StudentRepository extends JpaRepository<Student, Long>, JpaSpecificationExecutor<Student> {
     }
 
-The controller :
+Finally, the controller :
 
 .. code-block:: java
 
@@ -65,14 +73,13 @@ The controller :
 
         @Override
         protected Class<?> getDTO() {
-            return StudentDto.class;
+            return Student.class;
         }
     }
 
 Constructor
 ^^^^^^^^^^^
-The constructor of ``GenericListController`` is used to inject the repository that will handle db operations for the model. This repository is passed to the superclass constructor where it passes the repository to the service layer.
-It does not work with repository directly from Controllers, all db operations is handled in the service layer.
+The constructor of ``GenericListController`` is used to inject the repository that will handle db operations for the model. This repository is passed to the superclass constructor where it passes the repository to the service layers. We do not work with repository directly from Controllers.
 
 
 .. code-block:: java
@@ -83,7 +90,7 @@ It does not work with repository directly from Controllers, all db operations is
 
 Methods
 ^^^^^^^
-- **getDTO()**: This method must be overridden to return the class type of the DTO (Data Transfer Object). The controller uses it to serialize/deserialize the model's records.
+- **getDTO()**: This method must be overridden to return the class type of the DTO (Data Transfer Object) that the controller will use to serialize/deserialize the model's records.
 
 .. code-block:: java
 
@@ -160,14 +167,14 @@ To use the ``GenericRetrieveController``, extend it in a controller class for a 
     @RequestMapping("/student")
     @RestController
     @Tag(name = "Student")
-    public class StudentRetrieveController extends GenericRetrieveController<Student, Long, StudentRepository> {
+    public class StudentController extends GenericRetrieveController<Student, Long, StudentRepository> {
         public StudentController(StudentRepository repository) {
             super(repository);
         }
 
         @Override
         protected Class<?> getDTO() {
-            return StudentDto.class;
+            return Student.class;
         }
     }
 
@@ -180,7 +187,7 @@ The constructor of ``GenericRetrieveController`` is used to inject the repositor
 
 .. code-block:: java
 
-    public StudentRetrieveController(StudentRepository repository) {
+    public StudentController(StudentRepository repository) {
         super(repository);
     }
 
@@ -217,3 +224,152 @@ To learn more about the ``Dto`` please read the :ref:`DTO`.
     }
 
 In this example, we specified the ``nationalNumber`` as lookup field which is an ``Integer`` field to retrieve the record.
+
+
+GenericCreateController
+------------------------
+
+The ``GenericCreateController`` class is a generic controller for creating model records. It exposes an endpoint with the ``POST`` method for adding new records.
+
+Type Parameters:
+^^^^^^^^^^^^^^^^
+
+- **Model**: The class type of the entity (e.g., `Student`).
+- **ID**: The type of the model's identifier (e.g., `Long`).
+- **ModelRepository**: The repository interface extending `JpaRepository`.
+
+Example Usage:
+
+Below is an example of how to extend the ``GenericCreateController`` to manage a `Student` model.
+
+.. code-block:: java
+
+    @RequestMapping("/student")
+    @RestController
+    @Tag(name = "Student")
+    public class StudentCreateController extends GenericCreateController<Student, Long, StudentRepository> {
+        public StudentCreateController(StudentRepository repository) {
+            super(repository);
+        }
+
+        @Override
+        protected Class<?> getDTO() {
+            return StudentDto.class;
+        }
+    }
+
+Methods
+^^^^^^^
+
+- **getDTO()**: Returns the class type of the DTO used for serializing/deserializing the model's data. 
+
+    .. code-block:: java
+
+        @Override
+        protected Class<?> getDTO() {
+            return StudentDto.class;
+        }
+
+GenericUpdateController
+------------------------
+
+The ``GenericUpdateController`` provides a generic implementation for updating model records. It supports both ``PUT`` (complete update) and ``PATCH`` (partial update) methods.
+
+Type Parameters
+^^^^^^^^^^^^^^^
+
+- **Model**: The class type of the entity (e.g., `Student`).
+- **ID**: The type of the model's identifier (e.g., `Long`).
+- **ModelRepository**: The repository interface extending `JpaRepository` and `JpaSpecificationExecutor`.
+
+Example Usage
+^^^^^^^^^^^^^
+
+Below is an example of how to extend the ``GenericUpdateController`` for managing `Student` records.
+
+.. code-block:: java
+
+    @RequestMapping("/student")
+    @RestController
+    @Tag(name = "Student")
+    public class StudentUpdateController extends GenericUpdateController<Student, Long, StudentRepository> {
+        public StudentUpdateController(StudentRepository repository) {
+            super(repository);
+        }
+
+        @Override
+        protected Class<?> getDTO() {
+            return StudentDto.class;
+        }
+    }
+
+Methods
+^^^^^^^
+
+- **configLookupFilter()**: Specifies the field used for locating records. Defaults to the `id` field but can be customized.
+
+    .. code-block:: java
+
+        @Override
+        protected Filter configLookupFilter() {
+            return Filter.builder()
+                    .name("nationalNumber")
+                    .fieldType(FieldType.INTEGER)
+                    .operation(FilterOperation.EQUAL)
+                    .build();
+        }
+
+- **getDTO()**: Returns the DTO class type.
+
+
+GenericDeleteController
+------------------------
+
+The ``GenericDeleteController`` provides a generic implementation for deleting model records. It exposes an endpoint with the ``DELETE`` method.
+
+Type Parameters
+^^^^^^^^^^^^^^^^
+
+- **Model**: The class type of the entity (e.g., `Student`).
+- **ID**: The type of the model's identifier (e.g., `Long`).
+- **ModelRepository**: The repository interface extending `JpaRepository` and `JpaSpecificationExecutor`.
+
+Example Usage
+^^^^^^^^^^^^^
+
+Below is an example of how to extend the ``GenericDeleteController`` for managing `Student` records.
+
+.. code-block:: java
+
+    @RequestMapping("/student")
+    @RestController
+    @Tag(name = "Student")
+    public class StudentDeleteController extends GenericDeleteController<Student, Long, StudentRepository> {
+        public StudentDeleteController(StudentRepository repository) {
+            super(repository);
+        }
+
+        @Override
+        protected Class<?> getDTO() {
+            return StudentDto.class;
+        }
+    }
+
+Methods
+^^^^^^^
+
+- **configLookupFilter()**: Specifies the field used for locating records. Defaults to the `id` field but can be customized.
+
+    .. code-block:: java
+
+        @Override
+        protected Filter configLookupFilter() {
+            return Filter.builder()
+                    .name("id")
+                    .fieldType(FieldType.INTEGER)
+                    .operation(FilterOperation.EQUAL)
+                    .build();
+        }
+
+- **getDTO()**: Returns the DTO class type.
+
