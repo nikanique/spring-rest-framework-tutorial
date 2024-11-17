@@ -295,14 +295,15 @@ GenericCreateController
 
 The ``GenericCreateController`` class is a generic controller for creating model records. It exposes an endpoint with the ``POST`` method for adding new records.
 
-Type Parameters:
+Type Parameters
 ^^^^^^^^^^^^^^^^
 
 - **Model**: The class type of the entity (e.g., `Student`).
 - **ID**: The type of the model's identifier (e.g., `Long`).
 - **ModelRepository**: The repository interface extending `JpaRepository`.
 
-Example Usage:
+Example Usage
+^^^^^^^^^^^^^^
 
 Below is an example of how to extend the ``GenericCreateController`` to manage a `Student` model.
 
@@ -567,7 +568,7 @@ Retrieves a paginated list of records with optional filters and sorting.
 - `sortBy` (default: empty): Field to sort by.
 - `direction` (default: `ASC`): Sort direction (`ASC` or `DESC`).
 
-**Example Usage:**
+**Example Endoint Usage:**
 
 .. code-block:: bash
 
@@ -652,7 +653,8 @@ GenericCommandController
 
 The ``GenericCommandController`` is an abstract class designed to handle generic CUD (Create, Update, Delete) operations in a Spring Boot application. The controller exposes endpoints for creating, updating, partially updating, and deleting resources.
 
-**Example Implementation**
+Example Usage
+^^^^^^^^^^^^^^^^^
 
 .. code-block:: java
 
