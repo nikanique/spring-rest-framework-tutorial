@@ -28,6 +28,7 @@ Example Usage
 To use the ``GenericListController``, extend it in a controller class for a specific model and repository. Below is an example of how you can extend `GenericListController` for managing `Student` model.
 
 Assuming that we have Student model in our project:
+
 .. code-block:: java
 
     import jakarta.persistence.Entity;
