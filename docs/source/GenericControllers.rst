@@ -51,6 +51,7 @@ Assuming that we have Student model in our project:
 And this is the StudentRepository. You should extend both ``JpaRepository`` and ``JpaSpecificationExecutor`` to enable the repository to be used in .
 
 .. code-block:: java
+
     import com.example.demo.model.Student;
     import org.springframework.data.jpa.repository.JpaRepository;
     import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -74,7 +75,7 @@ Finally, the controller :
 
         @Override
         protected Class<?> getDTO() {
-            return Student.class;
+            return StudentDto.class;
         }
     }
 
@@ -134,7 +135,11 @@ To learn more about the ``Dto`` please read the :ref:`DTO`.
                 .build();
     }
 
-Here, the example sets up a filter for the ``name`` field with a ``CONTAINS`` operation and a ``STRING`` field type.
+Here, the example sets up a filter for the ``name`` field with a ``CONTAINS`` operation and a ``STRING`` field type:
+
+.. code-block:: bash
+
+    curl -X GET "http://localhost:8080/student?name=Ale"
 
 To read more about the ``FilterSet`` please read the :ref:`FilterSet`.
 
@@ -222,7 +227,7 @@ To use the ``GenericRetrieveController``, extend it in a controller class for a 
 
         @Override
         protected Class<?> getDTO() {
-            return Student.class;
+            return StudentDto.class;
         }
     }
 

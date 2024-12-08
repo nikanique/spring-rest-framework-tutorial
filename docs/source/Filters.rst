@@ -114,3 +114,9 @@ Other filters:
 
   - ``name``: Checks if the name contains a substring.
   - ``number_of_people`` (mapped to ``population``): Filters cities within a specific population range in specific continent.
+
+In this example the presence of filter paramters are optional, so the endpoint can be called like this to query the database records:
+
+.. code-block:: bash
+
+    curl -X GET "http://localhost:8080/cities?continent=Europe&number_of_people_from=140000&number_of_people_to=250000"
