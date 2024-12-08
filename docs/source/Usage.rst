@@ -47,7 +47,7 @@ To start using the library, follow these steps:
 
    For example, declare a Student model.
 
-   .. code-block::java
+   .. code-block:: java
 
       import jakarta.persistence.Entity;
       import jakarta.persistence.GenerationType;
@@ -69,7 +69,7 @@ To start using the library, follow these steps:
    
    Create Repository for you model:
 
-    .. code-block::java
+    .. code-block:: java
 
       import com.example.demo.model.Student;
       import org.springframework.data.jpa.repository.JpaRepository;
@@ -85,7 +85,7 @@ To start using the library, follow these steps:
    
    declare a DTO representing your model's field in web API.
 
-   .. code-block::java
+   .. code-block:: java
 
       import io.github.nikanique.springrestframework.annotation.Expose;
       import io.github.nikanique.springrestframework.annotation.ReadOnly;
@@ -106,8 +106,8 @@ To start using the library, follow these steps:
    
    Create your Controller by extending **QueryController** which will generate List and Retrieve endpoint for you.
 
-   .. code-block::java
-   
+   .. code-block:: java
+
       @RequestMapping("/student")
       @RestController
       @Tag(name = "Student")
@@ -124,5 +124,6 @@ To start using the library, follow these steps:
       
 
 4. Run your application, and enjoy your APIs.
+   
    You can see your API at http://app-server:port/swagger-ui.html
 
