@@ -39,6 +39,7 @@ Getting Started
 To start using the library, follow these steps:
 
 1. Add the necessary dependencies to your project:
+   
    Add the required dependencies into your project following the
    installation section.
 
@@ -67,6 +68,7 @@ To start using the library, follow these steps:
 
    
    Create Repository for you model.
+
     .. code-block:: 
       import com.example.demo.model.Student;
       import org.springframework.data.jpa.repository.JpaRepository;
@@ -79,7 +81,9 @@ To start using the library, follow these steps:
     
 
 3. Configure your API endpoints and serializers DTO:
+   
    declare a DTO representing your model's field in web API.
+
    .. code-block:: 
       import io.github.nikanique.springrestframework.annotation.Expose;
       import io.github.nikanique.springrestframework.annotation.ReadOnly;
@@ -111,7 +115,7 @@ To start using the library, follow these steps:
       
          @Override
          protected Class<?> getDTO() {
-               return Student.class;
+               return StudentDto.class;
          }
       }  
       
