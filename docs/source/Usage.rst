@@ -69,7 +69,7 @@ To start using the library, follow these steps:
    
    Create Repository for you model:
 
-    .. code-block:: java
+   .. code-block:: java
 
       import com.example.demo.model.Student;
       import org.springframework.data.jpa.repository.JpaRepository;
