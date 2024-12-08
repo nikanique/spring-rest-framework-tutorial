@@ -112,7 +112,7 @@ To start using the library, follow these steps:
       @RestController
       @Tag(name = "Student")
       public class StudentController extends QueryController<Kid, Long, KidRepository> {
-         public StudentController(KidRepository repository) {
+         public StudentController(StudentRepository repository) {
                super(repository);
          }
       
