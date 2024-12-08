@@ -103,7 +103,7 @@ The filtering system supports querying nested model fields by mapping filter nam
 
         protected FilterSet configFilterSet() {
         return FilterSet.builder()
-                .addFilter("city_name", FilterOperation.CONTAINS, FieldType.STRING, "Check containing a name")
+                .addFilter("name", FilterOperation.CONTAINS, FieldType.STRING, "Check containing a name")
                 .addFilter("continent", "country__continent__name", FilterOperation.CONTAINS, FieldType.STRING, "Check containing a continent name")
                 .addFilter("number_of_people", "population", FilterOperation.BETWEEN, FieldType.INTEGER, "Retrieves cities with population between provided population range")
                 .build();

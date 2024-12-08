@@ -111,8 +111,8 @@ To start using the library, follow these steps:
       @RequestMapping("/student")
       @RestController
       @Tag(name = "Student")
-      public class StudentController extends QueryController<Kid, Long, KidRepository> {
-         public StudentController(KidRepository repository) {
+      public class StudentController extends QueryController<Kid, Long, StudentRepository> {
+         public StudentController(StudentRepository repository) {
                super(repository);
          }
       
