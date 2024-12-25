@@ -18,3 +18,4 @@ Contents
    Serialization
    Filters
    Dto
+   Security

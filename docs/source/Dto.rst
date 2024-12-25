@@ -91,6 +91,34 @@ The `@FieldValidation` annotation and the `validate` method enforce constraints 
     private String company;
 
 
+Custom validation using `validate` method:
+
+.. code-block:: java
+
+     @Data
+    public class OrderDTO extends Dto {
+
+        @ReadOnly
+        private Long id;   
+        private String company;
+
+        @Override
+        public Map<String, String> validate(Set<String> fieldNames, Boolean raiseValidationError) throws Throwable {
+            Map<String, String> validationErrors = super.validate(fieldNames, false);
+
+            if (company != null && company.equals("BMW")) {
+                validationErrors.put("company", "company must not be BMW");
+            }
+
+            if (!validationErrors.isEmpty() && raiseValidationError) {
+                throw new ValidationException(validationErrors);
+            }
+
+            return validationErrors;
+        }
+    }
+
+
 In `ApplianceDTO`:
 - `company` must have at least three characters and cannot be null.
 - Custom validation in the `validate` method further restricts the value of `company` (e.g., cannot be "BMW").
