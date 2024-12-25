@@ -66,7 +66,7 @@ The following example demonstrates how to secure a command controller for the ``
             authorities.put("POST", List.of("school:write"));
             authorities.put("DELETE", List.of("school:delete"));
 
-            // The PUT and PATCH will be accessable by all users with any authorities
+            // The PUT and PATCH are not present, so they will be accessable by all users with any authorities
         }
 
         @Override
@@ -77,6 +77,7 @@ The following example demonstrates how to secure a command controller for the ``
 
 - The ``configRequiredAuthorities`` method maps HTTP methods (e.g., ``POST``, ``DELETE``) to the required authority lists.
 - In this example:
+  
   - The ``POST`` method requires the ``school:write`` authority.
   - The ``DELETE`` method requires the ``school:delete`` authority.
   - The ``PUT`` and ``PATCH`` will be accessable by all users with any authorities.
