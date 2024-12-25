@@ -11,23 +11,11 @@ To install the Spring REST Framework, include the following dependencies in your
 .. code-block:: xml
 
    <dependencies>
-      <dependency>
-         <groupId>org.springframework.boot</groupId>
-         <artifactId>spring-boot-starter-data-jpa</artifactId>
-      </dependency>
-      <dependency>
-         <groupId>org.springframework.boot</groupId>
-         <artifactId>spring-boot-starter-web</artifactId>
-      </dependency>
-      <dependency>
-         <groupId>org.springdoc</groupId>
-         <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-         <version>2.1.0</version>
-      </dependency>
+      <!-- Other dependencies -->
       <dependency>
          <groupId>io.github.nikanique</groupId>
          <artifactId>spring-rest-framework</artifactId>
-         <version>1.0.1</version>
+         <version>2.1.0</version>
       </dependency>
    </dependencies>
 
