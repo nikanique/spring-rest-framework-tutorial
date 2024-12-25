@@ -7,7 +7,7 @@ copyright = '2024, Nikanique'
 author = 'Nikanique'
 
 release = '0.1'
-version = '1.0.0-beta'
+version = '2.1.0'
 
 # -- General configuration
 
