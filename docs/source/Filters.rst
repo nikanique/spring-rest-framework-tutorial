@@ -102,12 +102,12 @@ The filtering system supports querying nested model fields by mapping filter nam
 .. code-block:: java
 
     protected FilterSet configFilterSet() {
-    return FilterSet.builder()
-            .addFilter("name", FilterOperation.CONTAINS, FieldType.STRING, "Check containing a name")
-            .addFilter("continent", "country__continent__name", FilterOperation.CONTAINS, FieldType.STRING, "Check containing a continent name")
-            .addFilter("number_of_people", "population", FilterOperation.BETWEEN, FieldType.INTEGER, "Retrieves cities with population between provided population range")
-            .build();
-    }
+        return FilterSet.builder()
+                .addFilter("name", FilterOperation.CONTAINS, FieldType.STRING, "Check containing a name")
+                .addFilter("continent", "country__continent__name", FilterOperation.CONTAINS, FieldType.STRING, "Check containing a continent name")
+                .addFilter("number_of_people", "population", FilterOperation.BETWEEN, FieldType.INTEGER, "Retrieves cities with population between provided population range")
+                .build();
+        }
 
 In the example the ``continent`` (mapped to ``country__continent__name``): Checks for a substring in related model ``country``'s ``continent``'s '``name``. 
 Other filters:
