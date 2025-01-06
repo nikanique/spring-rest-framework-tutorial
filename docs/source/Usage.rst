@@ -48,7 +48,7 @@ To start using the library, follow these steps:
       @Id
       @GeneratedValue(strategy = GenerationType.IDENTITY)
       private Long id;
-      private String fullName;
+      private String name;
       private Integer age;
       private String major;
       
@@ -84,9 +84,9 @@ To start using the library, follow these steps:
       public class StudentDto extends Dto{
 
       @Expose(source = "name")
-      private String firstName;
+      private String fullName;
       private Integer age;
-      private String color;
+      private String grade;
       
       @ReadOnly
       private Long id;
