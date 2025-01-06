@@ -86,7 +86,7 @@ To start using the library, follow these steps:
       @Expose(source = "name")
       private String fullName;
       private Integer age;
-      private String grade;
+      private String major;
       
       @ReadOnly
       private Long id;
