@@ -62,7 +62,7 @@ And this is the StudentRepository. You should extend both ``JpaRepository`` and 
     }
 
 
-   declare a DTO representing your model's field in web API.
+declare a DTO representing your model's field in web API.
 
    .. code-block:: java
 
@@ -81,7 +81,7 @@ And this is the StudentRepository. You should extend both ``JpaRepository`` and 
       
       @ReadOnly
       private Long id;
-      
+
       }
 
 
