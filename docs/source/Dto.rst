@@ -190,15 +190,16 @@ Below is an example DTO class that demonstrates all the features of the `Dto` :
         @ReadOnly
         private Long id;
 
-        @Expose(source = "customer__full_name")
+        @Expose(source = "customer__full_name")  // retrieve from order.customer.full_name
         @ReadOnly
         private String customerName;
 
-        @Expose(source = "customer__address__city")
+        @Expose(source = "customer__city__name") // retrieve from order.customer.city.name
         @ReadOnly
         private String customerCity;
 
         @FieldValidation(nullable = false, minLength = 3)
+        @Expose(source = "product__name") // retrieve from order.product.name
         private String productName;
 
         @Expose(format = "#,###")
@@ -225,7 +226,7 @@ Below is an example DTO class that demonstrates all the features of the `Dto` :
         @FieldValidation(nullable = false)
         private String orderStatus;
 
-        @Expose(source = "order_details", methodName = "formatOrderDetails")
+        @Expose(source = "order_details", methodName = "formatOrderDetails") // Calculated field
         @ReadOnly
         private String orderSummary;
 

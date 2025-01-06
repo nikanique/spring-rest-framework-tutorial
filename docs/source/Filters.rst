@@ -25,7 +25,7 @@ Builder
 
 The ``FilterSetBuilder`` provides methods to construct a ``FilterSet`` instance fluently:
 
-.. code-block::java
+.. code-block:: java
 
     protected FilterSet configFilterSet() {
         return FilterSet.builder()
@@ -46,25 +46,25 @@ Finally we compile the FilterSet by calling ``.build()`` method.
    
 .. code-block:: java
 
-        FilterSetBuilder addFilter(String name, FilterOperation operation, FieldType fieldType)
+    FilterSetBuilder addFilter(String name, FilterOperation operation, FieldType fieldType)
         
-    Adds a filter with a name, operation, and type.
+Adds a filter with a name, operation, and type.
 
 2. **Filter with Help Text**:
    
 .. code-block:: java
 
-        FilterSetBuilder addFilter(String name, FilterOperation operation, FieldType fieldType, String helpText)
+    FilterSetBuilder addFilter(String name, FilterOperation operation, FieldType fieldType, String helpText)
 
-    Adds a filter and a descriptive help text.
+Adds a filter and a descriptive help text.
 
 3. **Model-Field Mapping**:
 
 .. code-block:: java
 
-        FilterSetBuilder addFilter(String name, String modelFieldName, FilterOperation operation, FieldType fieldType)
+    FilterSetBuilder addFilter(String name, String modelFieldName, FilterOperation operation, FieldType fieldType)
 
-    Links a filter name to a specific model field.
+Links a filter name to a specific model field.
 
 
 Filter
@@ -101,13 +101,13 @@ The filtering system supports querying nested model fields by mapping filter nam
 
 .. code-block:: java
 
-        protected FilterSet configFilterSet() {
-        return FilterSet.builder()
-                .addFilter("name", FilterOperation.CONTAINS, FieldType.STRING, "Check containing a name")
-                .addFilter("continent", "country__continent__name", FilterOperation.CONTAINS, FieldType.STRING, "Check containing a continent name")
-                .addFilter("number_of_people", "population", FilterOperation.BETWEEN, FieldType.INTEGER, "Retrieves cities with population between provided population range")
-                .build();
-        }
+    protected FilterSet configFilterSet() {
+    return FilterSet.builder()
+            .addFilter("name", FilterOperation.CONTAINS, FieldType.STRING, "Check containing a name")
+            .addFilter("continent", "country__continent__name", FilterOperation.CONTAINS, FieldType.STRING, "Check containing a continent name")
+            .addFilter("number_of_people", "population", FilterOperation.BETWEEN, FieldType.INTEGER, "Retrieves cities with population between provided population range")
+            .build();
+    }
 
 In the example the ``continent`` (mapped to ``country__continent__name``): Checks for a substring in related model ``country``'s ``continent``'s '``name``. 
 Other filters:
