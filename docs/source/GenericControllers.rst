@@ -64,25 +64,25 @@ And this is the StudentRepository. You should extend both ``JpaRepository`` and 
 
 declare a DTO representing your model's field in web API.
 
-   .. code-block:: java
+.. code-block:: java
 
-      import io.github.nikanique.springrestframework.annotation.Expose;
-      import io.github.nikanique.springrestframework.annotation.ReadOnly;
-      import io.github.nikanique.springrestframework.dto.Dto;
-      import lombok.Data;
+    import io.github.nikanique.springrestframework.annotation.Expose;
+    import io.github.nikanique.springrestframework.annotation.ReadOnly;
+    import io.github.nikanique.springrestframework.dto.Dto;
+    import lombok.Data;
 
-      @Data
-      public class StudentDto extends Dto{
+    @Data
+    public class StudentDto extends Dto{
 
-      @Expose(source = "name")
-      private String fullName;
-      private Integer age;
-      private String major;
-      
-      @ReadOnly
-      private Long id;
+    @Expose(source = "name")
+    private String fullName;
+    private Integer age;
+    private String major;
+    
+    @ReadOnly
+    private Long id;
 
-      }
+    }
 
 
 
