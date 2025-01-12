@@ -213,6 +213,7 @@ For example, consider the following scenario where a `SchoolDto` needs to popula
     }
 
 In this example:
+
 - The `address` field is marked as `@ReadOnly` and is not set directly during deserialization.
 - The `postDeserialization()` method is overridden to compute and assign the value of `address` using a utility method, `retrieveAddressFromGeoCoordinate()`.
 
