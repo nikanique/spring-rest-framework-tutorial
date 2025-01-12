@@ -79,6 +79,7 @@ Filter class properties:
 - ``FilterOperation operation``: The filtering operation.
 - ``FieldType fieldType``: The type of the field being filtered (e.g., ``STRING``, ``INTEGER``).
 - ``String helpText``: A description of the filter's purpose (optional).
+- ``boolean required``: Make the filter manadatory. Default to ``false``.
 
 
 
