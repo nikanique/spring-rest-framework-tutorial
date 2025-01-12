@@ -39,11 +39,13 @@ Field Exposure and Custom Mapping
 ---------------------------------
 
 **Description**  
-The `@Expose` annotation allows customization of:
+The `@Expose` annotation has following parameters:
 
 - **Source**: Specify the origin of the field value, including nested fields.
-- **Custom format**: Format the output value (e.g., decimal places, number formatting).
-- **Static method processing**: Apply a transformation to the field value via a static method.
+- **format**: Format the output value (e.g., decimal places, number formatting).
+- **methodName**: Apply a transformation to the field value via a static method.
+- **isRequired**: Validate the field to be present.
+- **defaultValue**: Set a default value for a field if it is not present.
 
 **Implementation**::
 
@@ -177,6 +179,42 @@ Use the `format` parameter in the `@Expose` annotation to specify custom output 
 
 - `mark` is formatted to two decimal places.
 - `population` uses a thousands separator.
+
+
+
+postDeserialization() Method
+----------------------------
+
+The `postDeserialization()` method allows you to customize and refine DTOs after they are created. This is particularly useful for performing additional processing, such as populating read-only fields, or enriching your DTOs with computed values. It's an essential tool for handling advanced scenarios while maintaining the simplicity and modularity of your code.
+
+For example, consider the following scenario where a `SchoolDto` needs to populate its `address` field based on latitude and longitude values after the DTO is deserialized:
+
+.. code-block:: java
+
+    @Data
+    public class SchoolDto extends Dto {
+
+        private String name;
+        @ReadOnly
+        private String address;  // Read-only field to be set after deserialization
+        @ReadOnly
+        private Long id;
+
+        private Float latitude;
+        private Float longitude;
+
+        @Override
+        public void postDeserialization(EntityManager entityManager) {
+            // Custom logic to compute the address using latitude and longitude
+            // In a real scenario, this could involve a call to an external API
+            this.address = retrieveAddressFromGeoCoordinate(latitude, longitude);
+        }
+
+    }
+
+In this example:
+- The `address` field is marked as `@ReadOnly` and is not set directly during deserialization.
+- The `postDeserialization()` method is overridden to compute and assign the value of `address` using a utility method, `retrieveAddressFromGeoCoordinate()`.
 
 
 
