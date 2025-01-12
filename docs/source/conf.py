@@ -3,11 +3,11 @@
 # -- Project information
 
 project = 'Spring Rest Framework'
-copyright = '2024, Nikanique'
+copyright = '2025, Nikanique'
 author = 'Nikanique'
 
 release = '0.1'
-version = '2.1.0'
+version = '2.3.0'
 
 # -- General configuration
 
