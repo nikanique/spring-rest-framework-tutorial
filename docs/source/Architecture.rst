@@ -1,7 +1,6 @@
-.. _architecture:
 
 Architecture
-------------
+============
 
 .. image:: images/spring_rest_framework.jpg
    :alt: Spring Rest Framework Architecture
