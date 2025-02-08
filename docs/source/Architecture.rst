@@ -2,7 +2,7 @@
 Architecture
 ============
 
-.. image:: images/spring_rest_framework.jpg
+.. image:: _images/spring_rest_framework.jpg
    :alt: Spring Rest Framework Architecture
 
 The framework is built on top of **Spring Boot, Spring MVC, Spring Data JPA, and Spring Security**, providing a robust suite of tools for developing **REST APIs**. The core components are as follows:
