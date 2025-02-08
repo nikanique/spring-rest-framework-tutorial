@@ -19,3 +19,4 @@ Contents
    Filters
    Dto
    Security
+   Architecture
